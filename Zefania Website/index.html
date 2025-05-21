@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Minimalist Baker</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Helvetica Neue", sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+      }
+
+      header {
+        background-color: #fbb8b1;
+        padding: 1rem 2rem;
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        background-color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-weight: 500;
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 1.5rem;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: black;
+        font-weight: 500;
+        cursor: pointer;
+        padding: 0.3rem 0.6rem;
+        border-radius: 10px;
+        transition: background-color 0.3s;
+      }
+
+      .nav-links a.active-link {
+        background-color: white;
+        color: #f25749;
+      }
+
+      .hero {
+        text-align: center;
+        background-color: #eeeeee;
+        padding: 4rem 2rem;
+      }
+
+      .hero h1 {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+
+      .hero p {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 1.5rem;
+      }
+
+      .search-form {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      .search-form input {
+        padding: 0.5rem 1rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 200px;
+      }
+
+      .search-form button {
+        background-color: #333;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .recipe-lists {
+        display: flex;
+        justify-content: center;
+        gap: 5rem;
+        padding: 3rem 2rem;
+        background-color: white;
+      }
+
+      .recipe-column {
+        display: none;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+
+      .recipe-column.active {
+        display: block;
+        opacity: 1;
+      }
+
+      .recipe-column h3 {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .recipe-column ul {
+        list-style: none;
+      }
+
+      .recipe-column li {
+        margin-bottom: 0.5rem;
+      }
+
+      .photo-gallery {
+        display: none;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+        padding: 2rem;
+        background-color: white;
+      }
+
+      .photo-gallery.active {
+        display: flex;
+      }
+
+      .photo-item {
+        width: 200px;
+        text-align: center;
+      }
+
+      .photo-item img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+      }
+
+      .photo-item p {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .all-recipe-content {
+        display: none;
+        padding: 2rem;
+      }
+
+      .all-recipe-content.active {
+        display: block;
+      }
+
+      @media (max-width: 768px) {
+        .recipe-lists {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .nav-links {
+          flex-direction: column;
+          gap: 0.5rem;
+          align-items: flex-end;
+        }
+
+        .search-form {
+          flex-direction: column;
+        }
+
+        .recipe-column {
+          width: 100%;
+          text-align: center;
+        }
+
+        .photo-item {
+          width: 100%;
+          max-width: 300px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <div class="logo">Minimalist Baker</div>
+        <ul class="nav-links">
+          <li>
+            <a
+              href="#"
+              class="nav-item active-link"
+              onclick="showRecipes('vegan', this)"
+              >Vegan</a
+            >
+          </li>
+          <li>
+            <a href="#" class="nav-item" onclick="showRecipes('gluten', this)"
+              >Gluten-Free</a
+            >
+          </li>
+          <li>
+            <a href="#" class="nav-item" onclick="showRecipes('photo', this)"
+              >Photo</a
+            >
+          </li>
+          <li>
+            <a href="#" class="nav-item" onclick="showRecipes('all', this)"
+              >All Recipe</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="hero">
+      <h1>MINIMALIST BAKER</h1>
+      <p>Simple Recipes That Make You Feel Good</p>
+      <form class="search-form" onsubmit="searchAllRecipes(event)">
+        <input type="text" id="searchInput" placeholder="New Recipes" />
+        <button type="submit">Search</button>
+      </form>
+    </main>
+
+    <section class="recipe-lists">
+      <div class="recipe-column vegan-column active">
+        <h3>Vegan</h3>
+        <ul>
+          <li>Baked Mango Oatmeal Cake</li>
+          <li>Vegan Brown Sugar</li>
+          <li>Banana Bread Cake Vegan</li>
+          <li>Cupcake Vanilla Vegan</li>
+          <li>Cheese Cake Vegan</li>
+        </ul>
+      </div>
+      <div class="recipe-column gluten-column active">
+        <h3>Gluten-Free</h3>
+        <ul>
+          <li>Gluten-free Strawberry Cake</li>
+          <li>Gluten-free Carrot Cake</li>
+          <li>Gluten-free Bolu Singkong</li>
+          <li>Almond Carrot Cake Gluten-free</li>
+          <li>Chocolate Chips Cookies Gluten-free</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="photo-gallery" id="photoGallery">
+      <div class="photo-item">
+        <img src="image/MangoBakedOatmeal.jpg" alt="Baked Mango Oatmeal Cake" />
+        <p>Baked Mango Oatmeal Cake</p>
+      </div>
+      <div class="photo-item">
+        <img
+          src="image/VeganBrownSugarMapleCookies.jpg"
+          alt="Vegan Brown Sugar"
+        />
+        <p>Vegan Brown Sugar</p>
+      </div>
+      <div class="photo-item">
+        <img src="image/veganbananabread.jpg" alt="Banana Bread Cake Vegan" />
+        <p>Banana Bread Cake Vegan</p>
+      </div>
+      <div class="photo-item">
+        <img src="image/cupcakevanila.jpg" alt="Cupcake Vanilla Vegan" />
+        <p>Cupcake Vanilla Vegan</p>
+      </div>
+      <div class="photo-item">
+        <img src="image/vegancheesecake.jpg" alt="Cheese Cake Vegan" />
+        <p>Cheese Cake Vegan</p>
+      </div>
+      <div class="photo-item">
+        <img src="image/strawberrycake.jpg" alt="Gluten-free Strawberry Cake" />
+        <p>Gluten-free Strawberry Cake</p>
+      </div>
+      <div class="photo-item">
+        <img src="image/carrotcake.jpg" alt="Gluten-free Carrot Cake" />
+        <p>Gluten-free Carrot Cake</p>
+      </div>
+      <div class="photo-item">
+        <img src="image/bolusingkong.jpg" alt="Gluten-free Bolu Singkong" />
+        <p>Gluten-free Bolu Singkong</p>
+      </div>
+      <div class="photo-item">
+        <img
+          src="image/almondcarrotcake.jpg"
+          alt="Almond Carrot Cake Gluten-free"
+        />
+        <p>Almond Carrot Cake Gluten-free</p>
+      </div>
+      <div class="photo-item">
+        <img
+          src="image/chocolatechipscookies.jpg"
+          alt="Chocolate Chips Cookies Gluten-free"
+        />
+        <p>Chocolate Chips Cookies Gluten-free</p>
+      </div>
+    </section>
+
+    <section class="all-recipe-content" id="allRecipeContent">
+      <div
+        class="recipe-detail"
+        style="
+          padding: 2rem;
+          max-width: 700px;
+          margin: auto;
+          background-color: white;
+          border-radius: 10px;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        "
+      >
+        <h3 style="margin-bottom: 1rem">
+          Cara Membuat Baked Mango Oatmeal Cake
+        </h3>
+        <ol style="line-height: 1.6; color: #444">
+          <li>
+            Siapkan mangga beku yang baru dikeluarkan dari kulkas atau yang baru
+            matang, blender sampai halus.
+          </li>
+          <li>
+            Siapkan 1½ cup rolled oats, blender halus hingga berubah menjadi
+            bentuk tepung.
+          </li>
+          <li>
+            Masukkan pure mangga & rolled oats, campurkan sedikit-demi sedikit.
+            Jika terlalu cair, masukkan lagi tepung oat. Jika terlalu padat,
+            masukkan air atau susu plantbased sampai mencapai konsistensi yang
+            diinginkan.
+          </li>
+          <li>
+            Setelah adonan tercampur rata, masukkan bubuk kayu manis dan gula
+            merah. Lipat & aduk adonan sampai semuanya rata.
+          </li>
+          <li>
+            Terakhir siapkan loyang yang dialas dengan baking paper, tuang dan
+            ratakan adonan.
+          </li>
+          <li>
+            Siapkan topping sesuka hati, panaskan oven dengan panas sesuai
+            selera.
+          </li>
+          <li>
+            Panggang dengan durasi panas oven yang sesuai dengan yang dipilih,
+            jika sudah matang tusuk permukaan kue.
+          </li>
+          <li>
+            Setelah dipotong kotak, kue mangga siap disajikan dengan madu, saus
+            coklat dll!
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <script>
+      function showRecipes(category, clickedLink) {
+        const vegan = document.querySelector(".vegan-column");
+        const gluten = document.querySelector(".gluten-column");
+        const gallery = document.getElementById("photoGallery");
+        const allContent = document.getElementById("allRecipeContent");
+
+        vegan.classList.remove("active");
+        gluten.classList.remove("active");
+        gallery.classList.remove("active");
+        allContent.classList.remove("active");
+
+        if (category === "vegan") {
+          vegan.classList.add("active");
+        } else if (category === "gluten") {
+          gluten.classList.add("active");
+        } else if (category === "photo") {
+          gallery.classList.add("active");
+        } else if (category === "all") {
+          vegan.classList.add("active");
+          gluten.classList.add("active");
+          allContent.classList.add("active");
+        }
+
+        document.querySelectorAll(".nav-item").forEach((link) => {
+          link.classList.remove("active-link");
+        });
+        clickedLink.classList.add("active-link");
+      }
+
+      function searchAllRecipes(event) {
+        event.preventDefault();
+        const keyword = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+
+        const veganList = document.querySelectorAll(".vegan-column li");
+        const glutenList = document.querySelectorAll(".gluten-column li");
+
+        document.querySelector(".vegan-column").classList.add("active");
+        document.querySelector(".gluten-column").classList.add("active");
+        document.getElementById("photoGallery").classList.remove("active");
+        document.getElementById("allRecipeContent").classList.remove("active");
+
+        document.querySelectorAll(".nav-item").forEach((link) => {
+          link.classList.remove("active-link");
+          if (link.textContent.trim().toLowerCase() === "all recipe") {
+            link.classList.add("active-link");
+          }
+        });
+
+        [...veganList, ...glutenList].forEach((item) => {
+          if (item.textContent.toLowerCase().includes(keyword)) {
+            item.style.backgroundColor = "#ffe6e3";
+          } else {
+            item.style.backgroundColor = "transparent";
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
